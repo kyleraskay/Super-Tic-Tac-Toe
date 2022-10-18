@@ -149,7 +149,7 @@ public class SuperTicTacToeGame{
         return false;
     }
     public boolean match() {
-        /*
+
 
         if(checkAllRowTLtoBR())
             return true;
@@ -160,14 +160,17 @@ public class SuperTicTacToeGame{
         if(checkEachRow())
             return true;
 
-         */
+
 
 
         //MEGA MODE?? have to get all types of matches. Maybe implement later for fun
+        /*
 
         if(checkAllRowTRtoBL() && checkAllRowTLtoBR() && checkEachRow() && checkEachColumn()) {
             return true;
         }
+
+         */
 
         return false;
     }
