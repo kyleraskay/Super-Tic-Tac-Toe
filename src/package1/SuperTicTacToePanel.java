@@ -8,8 +8,6 @@ import javax.swing.JPanel;
 import java.awt.*;
 
 public class SuperTicTacToePanel extends JPanel implements ActionListener {
-    //private JButton[][] jButtonsBoard;
-
     public static int jButtonSize;
     JButton[][] jButtonsBoard = new JButton[jButtonSize][jButtonSize];
 
@@ -52,7 +50,6 @@ public class SuperTicTacToePanel extends JPanel implements ActionListener {
             for(int col =0; col<game.size;col++) {
                 jButtonsBoard[row][col] = new JButton("", emptyIcon);
                 this.add(jButtonsBoard[row][col]);
-
                 jButtonsBoard[row][col].addActionListener(this::actionPerformed);
                 this.setLayout(new GridLayout(game.size,game.size));
 

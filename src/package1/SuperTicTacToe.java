@@ -1,7 +1,6 @@
 package package1;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,7 +12,6 @@ public class SuperTicTacToe {
         JMenuItem quitItem;
         fileMenu = new JMenu("File");
 
-
         menus = new JMenuBar();
         menus.add(fileMenu);
         JFrame gameFrame = new JFrame("Super Tic Tac Toe");
@@ -24,18 +22,14 @@ public class SuperTicTacToe {
             if(askToContSize()) {
                 size = getSize();
             }
-            else {
-                System.exit(0);
-            }
+            else {System.exit(0);}
         }
         int inARow = getInARow();
         while(!(inARow<=size && inARow>0)) {
             if(askToContInARow()) {
                 inARow = getInARow();
             }
-            else {
-                System.exit(0);
-            }
+            else {System.exit(0);}
         }
         SuperTicTacToePanel.jButtonSize = size;
         SuperTicTacToeGame game = new SuperTicTacToeGame(size, inARow);
@@ -62,9 +56,7 @@ public class SuperTicTacToe {
             if(askToContInvalid()) {
                 return getSize();
             }
-            else {
-                System.exit(0);
-            }
+            else {System.exit(0);}
         }
         return size;
     }
@@ -77,12 +69,9 @@ public class SuperTicTacToe {
             if(askToContInvalid()) {
                 return getInARow();
             }
-            else {
-                System.exit(0);
-            }
+            else {System.exit(0);}
         }
         return inARow;
-
     }
     public static boolean askToContSize() {
         JDialog.setDefaultLookAndFeelDecorated(true);
