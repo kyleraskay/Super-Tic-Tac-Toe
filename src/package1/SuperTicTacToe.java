@@ -25,7 +25,7 @@ public class SuperTicTacToe {
             else {System.exit(0);}
         }
         int inARow = getInARow();
-        while(!(inARow<=size && inARow>0)) {
+        while(!(inARow<=size && inARow>2)) {
             if(askToContInARow()) {
                 inARow = getInARow();
             }

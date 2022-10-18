@@ -27,6 +27,7 @@ public class SuperTicTacToeGame{
         if(match())
             status  = GameStatus.X_WON;
 
+
     }
     public void reset() {
 
@@ -175,8 +176,6 @@ public class SuperTicTacToeGame{
         return false;
     }
     //OPPONENT O functions
-
-
 
 
 
