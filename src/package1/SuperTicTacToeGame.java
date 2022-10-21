@@ -1,38 +1,122 @@
 package package1;
 
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.random.RandomGenerator;
+
 public class SuperTicTacToeGame{
     private Cell[][] board;
     private GameStatus status;
     public int size;
     public int inARow;
+    public int turn = 0;
+    ArrayList<Point> moves = new ArrayList();
 
-
+    //BLANK CONSTRUCTOR FOR SUPERTICTACTOEGAME
     public SuperTicTacToeGame(int size, int inARow){
-        status = GameStatus.IN_PROGRESS;
-        this.size = size;
-        this.inARow = inARow;
 
-        board = new Cell[size][size];
+            moves.add(new Point(0, 0));
+            status = GameStatus.IN_PROGRESS;
+            this.size = size;
+            this.inARow = inARow;
 
-        for (int row = 0; row < this.size; row++)    {
-            for (int col = 0; col < this.size; col++)    {
-                board[row][col] = Cell.EMPTY;
+            board = new Cell[size][size];
+
+            for (int row = 0; row < this.size; row++) {
+                for (int col = 0; col < this.size; col++) {
+                    board[row][col] = Cell.EMPTY;
+                }
+            }
+
+            moves.add(new Point(0, 0));
+            status = GameStatus.IN_PROGRESS;
+            this.size = size;
+            this.inARow = inARow;
+
+            board = new Cell[size][size];
+
+            for (int row = 0; row < this.size; row++) {
+                for (int col = 0; col < this.size; col++) {
+                    board[row][col] = Cell.EMPTY;
+                }
+            }
+
+    }
+
+    //MARKS PLAYER MOVE + AI RESPONSE
+    public void select (int row, int col) {
+        if (board[row][col] == Cell.EMPTY) {
+            board[row][col] = Cell.X;
+            moves.add(new Point(row, col));
+        }else
+            if (board[row][col] == Cell.X || board[row][col] == Cell.O) {
+                JOptionPane.showMessageDialog(null, "Invalid move someone already played here. Please try again.");
+                return;
+            }
+
+        if(match_x()) {
+            status = GameStatus.X_WON;
+        }
+        if(checkDraw()) {
+            status = GameStatus.CATS;
+        }
+        if(match_o()){
+            status = GameStatus.O_WON;
+        }
+
+        //AI BRAIN
+        aiBrain();
+        if(match_o()){
+            status = GameStatus.O_WON;
+        }
+        if(checkDraw()) {
+            status = GameStatus.CATS;
+        }
+    }
+    public void aiBrain() {
+        Random rand = new Random();
+        boolean o_Picked = false;
+        if(this.status == GameStatus.IN_PROGRESS) {
+            while (o_Picked == false) {
+                int otherRow = rand.nextInt(size);
+                int otherCol = rand.nextInt(size);
+
+                if (board[otherRow][otherCol] != Cell.X && board[otherRow][otherCol] != Cell.O) {
+                    board[otherRow][otherCol] = Cell.O;
+                    moves.add(new Point(otherRow, otherCol));
+                    turn += 1;
+                    o_Picked = true;
+                }
             }
         }
 
-    }
-
-    public void select (int row, int col) {
-        board [row][col] = Cell.X;
-        if(match())
-            status  = GameStatus.X_WON;
-
 
     }
+
+    //TAKES AWAY LAST PLAYER + AI MOVE
+    public void undo() {
+        //UNDO PLAYER MOVES
+        board[(int)(moves.get((turn * 2) - 1)).getX()][(int)(moves.get((turn * 2) - 1)).getY()] = Cell.EMPTY;
+        //UNDO AI MOVES
+        board[(int)(moves.get((int)(turn * 2)).getX())][(int)(moves.get((int)(turn * 2)).getY())] = Cell.EMPTY;
+        turn -= 1;
+    }
+
+    //RESETS BOARD TO NEW GAME
     public void reset() {
 
-        //CHANGE LATER to correct size of board
-        SuperTicTacToeGame game = new SuperTicTacToeGame(3,0);
+        moves.clear();
+        moves.add(new Point(0,0));
+        turn = 0;
+        status = GameStatus.IN_PROGRESS;
+
+        for (int row = 0; row < this.size; row++) {
+            for (int col = 0; col < this.size; col++) {
+                board[row][col] = Cell.EMPTY;
+            }
+        }
     }
 
     public GameStatus getGameStatus(){
@@ -42,6 +126,9 @@ public class SuperTicTacToeGame{
     public Cell[][] getBoard(){
         return board;
     }
+
+
+
     //CHECK FOR WIN FUNCTIONS
     public int checkRow(int row, int column) {
         if(column == this.size-(this.inARow-1)) {
@@ -57,7 +144,8 @@ public class SuperTicTacToeGame{
             return 3;
         return checkRow(row, column+1);
     }
-    public boolean checkEachRow() {
+
+    public boolean checkEachRow_x() {
         for(int row = 0; row<=this.size-1; row++) {
             if(checkRow(row,0) == 3) {
                 return true;
@@ -149,36 +237,78 @@ public class SuperTicTacToeGame{
         }
         return false;
     }
-    public boolean match() {
-
-
-        if(checkAllRowTLtoBR())
-            return true;
-        if(checkAllRowTRtoBL())
-            return true;
-        if(checkEachColumn())
-            return true;
-        if(checkEachRow())
-            return true;
-
-
-
-
-        //MEGA MODE?? have to get all types of matches. Maybe implement later for fun
-        /*
-
-        if(checkAllRowTRtoBL() && checkAllRowTLtoBR() && checkEachRow() && checkEachColumn()) {
-            return true;
+    public boolean checkAllRowTRtoBL_o() {
+        for(int col=this.size-1; col>1; col--) {
+            if(checkDiaRowTRtoBL(0,col)== 4) {
+                return true;
+            }
         }
-
-         */
-
+        for(int row = 0; row<this.size-2; row++) {
+            if(checkDiaRowTRtoBL(row, this.size-1)== 4) {
+                return true;
+            }
+        }
         return false;
     }
-    //OPPONENT O functions
+    public boolean match_x() {
 
+        if(checkAllRowTLtoBR_x()) {
+            return true;
+        }
+        if(checkAllRowTRtoBL_x()) {
+            return true;
+        }
+        if(checkEachColumn_x()) {
+            return true;
+        }
+        if(checkEachRow_x()) {
+            return true;
+        }
+        return false;
+    }
 
+    public boolean match_o() {
 
+        if(checkAllRowTLtoBR_o()) {
+            return true;
+        }
+        if(checkAllRowTRtoBL_o()) {
+            return true;
+        }
+        if(checkEachColumn_o()) {
+            return true;
+        }
+        if(checkEachRow_o()) {
+            return true;
+        }
+        return false;
+    }
+    public boolean checkDraw() {
+        int count =0;
+        for(int row = 0; row<this.size; row++) {
+            for(int col = 0; col<this.size; col++) {
+                if(board[row][col] == Cell.X) {
+                    count++;
+                }
+                if(board[row][col] == Cell.O) {
+                    count++;
+                }
+            }
+        }
+        if(count == (this.size*this.size) && !match_o() && !match_x()) {
+            return true;
+        }
+        return false;
+    }
+
+    //MEGA MODE?? have to get all types of matches. Maybe implement later for fun
+    /*
+
+    if(checkAllRowTRtoBL() && checkAllRowTLtoBR() && checkEachRow() && checkEachColumn()) {
+        return true;
+    }
+
+    */
 }
 
 
